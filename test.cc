@@ -38,9 +38,26 @@ int main(int argc, char** argv)
   }
 
 	char name[128];
+  const char oga_name[] = "GO-Advance Gamepad (rev 1.1)";
 	if (ioctl(joystick.getFD(), JSIOCGNAME(sizeof(name)), name) < 0)
 		strncpy(name, "Unknown", sizeof(name));
 	printf("Name: %s\n", name);
+
+  if (strcmp(name, oga_name)) {
+    printf("go advance gamepad : connection failed\n");
+    printf("connected gamepad : %s\n", name);
+
+    return -1;
+  }
+
+#define D_SIZE 18
+#define A_SIZE 2
+#define BTN_SIZE (D_SIZE+A_SIZE)
+  int buttons[BTN_SIZE];
+
+  for (int i=0; i<BTN_SIZE; i++) {
+    buttons[i] = -99999;
+  }
 
   while (true)
   {
@@ -53,9 +70,10 @@ int main(int argc, char** argv)
     {
       if (event.isButton())
       {
-        printf("Button %u is %s\n",
-          event.number,
-          event.value == 0 ? "up" : "down");
+        // printf("Button %u is %s\n",
+        //   event.number,
+        //   event.value == 0 ? "up" : "down");
+        buttons[event.number] = event.value;
 #define BUTTON_X 2
 #define BUTTON_PUSHED 1
         if (event.number == BUTTON_X && event.value == BUTTON_PUSHED) {
@@ -64,7 +82,19 @@ int main(int argc, char** argv)
       }
       else if (event.isAxis())
       {
-        printf("Axis %u is at position %d\n", event.number, event.value);
+        buttons[D_SIZE+event.number] = event.value;
+        // printf("Axis %u is at position %d\n", event.number, event.value);
+      }
+
+      if (!event.isInitialState()) {
+        for (int i=0; i<D_SIZE; i++) {
+          // printf("[%d]", buttons[i]);
+          printf("%d", buttons[i]);
+        }
+        for (int i=0; i<A_SIZE; i++) {
+          printf("[%+06d]", buttons[D_SIZE+i]);
+        }
+        printf("\n");
       }
     }
   }
