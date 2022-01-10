@@ -139,6 +139,8 @@ public:
    */
   Joystick(std::string devicePath, bool blocking);
  
+  int getFD();
+
   /**
    * Returns true if the joystick was found and may be used, otherwise false.
    */

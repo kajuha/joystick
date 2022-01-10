@@ -15,6 +15,16 @@
 #include "joystick.hh"
 #include <unistd.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <linux/joystick.h>
+#include <fcntl.h>
+#include <iostream>
+#include <string>
+#include <string.h>
+#include <sstream>
+
 int main(int argc, char** argv)
 {
   // Create an instance of Joystick
@@ -26,6 +36,11 @@ int main(int argc, char** argv)
     printf("open failed.\n");
     exit(1);
   }
+
+	char name[128];
+	if (ioctl(joystick.getFD(), JSIOCGNAME(sizeof(name)), name) < 0)
+		strncpy(name, "Unknown", sizeof(name));
+	printf("Name: %s\n", name);
 
   while (true)
   {

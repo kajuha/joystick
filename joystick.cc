@@ -62,6 +62,11 @@ bool Joystick::sample(JoystickEvent* event)
   return bytes == sizeof(*event);
 }
 
+int Joystick::getFD()
+{
+  return _fd;
+}
+
 bool Joystick::isFound()
 {
   return _fd >= 0;
