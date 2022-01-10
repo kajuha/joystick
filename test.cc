@@ -41,6 +41,11 @@ int main(int argc, char** argv)
         printf("Button %u is %s\n",
           event.number,
           event.value == 0 ? "up" : "down");
+#define BUTTON_X 2
+#define BUTTON_PUSHED 1
+        if (event.number == BUTTON_X && event.value == BUTTON_PUSHED) {
+          return 0;
+        }
       }
       else if (event.isAxis())
       {
